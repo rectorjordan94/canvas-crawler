@@ -11,11 +11,11 @@
 // first we grab our HTML elements for easy reference later
 const game = document.getElementById('canvas')
 const movement = document.getElementById('movement')
-const status = document.getElementById('status')
+const message = document.getElementById('status')
 
 // if we want to test if we got the right elements, we can do this:
 // movement.innerText = 'some stuff'
-// status.innerText = 'whats up how are you'
+// message.innerText = 'whats up how are you'
 
 // we need to set the game's context to be 2d
 // we also want to save that context to a variable for reference later
@@ -66,6 +66,7 @@ const movementHandler = (e) => {
     // by linking these keycodes to a function(or codeblock)
     // we can tell them to change the player x or y values
     // console.log('what the heck is e?\n', e.keyCode)
+
     // conditional statements if keycode === something do something if keycode === somethingElse do somethingElse
     // could build a giant if...else for this
     // im going to use a switch case instead
@@ -97,6 +98,31 @@ const movementHandler = (e) => {
     }
 }
 
+/// COLLISION DETECTION ///
+// here we'll detect a hit between entities
+// to accurately do this, we need to account for the entire space that one entity takes up
+// this means using the player x, y, width, and height
+// this also means using the ogre x, y, width, and height
+const detectHit = () => {
+    // we'll basically use a big if statement, to be able to tell if any of the sides of our hero interact with any of the sides of our ogre
+    if (player.x < ogre.x + ogre.width
+        && player.x + player.width > ogre.x
+        && player.y < ogre.y + ogre.height
+        && player.y + player.height > ogre.y) {
+            // console.log('HIT!')
+            // console.log('player x -> ', player.x)
+            // console.log('player width -> ', player.x + player.width)
+            // console.log('player y -> ', player.y)
+            // console.log('player height -> ', player.y + player.height)
+            // console.log('ogre x -> ', ogre.x)
+            // console.log('ogre width -> ', ogre.x + ogre.width)
+            // console.log('ogre y -> ', ogre.y)
+            // console.log('ogre height -> ', ogre.y + ogre.height)
+            // message.textContent = 'We have a hit!'
+            ogre.alive = false
+            message.textContent = 'You Win!'
+        }
+}
 
 
 
@@ -109,7 +135,10 @@ const movementHandler = (e) => {
 const gameLoop = () => {
     // no console logs in here if you can avoid it
     // for testing, it's ok to add them, but final should not have any
-
+    // putting our hit detection at the top so it takes precedence
+    if (ogre.alive) {
+        detectHit()
+    }
     // to resemble movement, we should clear the old canvas every loop
     // then instead of drawing a snake because it's maintaining all the old positions of our character
     // we'll just see our player square moving around
