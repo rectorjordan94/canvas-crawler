@@ -65,7 +65,7 @@ const movementHandler = (e) => {
     // up = 38, left = 37, down = 40, right = 39
     // by linking these keycodes to a function(or codeblock)
     // we can tell them to change the player x or y values
-    console.log('what the heck is e?\n', e.keyCode)
+    // console.log('what the heck is e?\n', e.keyCode)
     // conditional statements if keycode === something do something if keycode === somethingElse do somethingElse
     // could build a giant if...else for this
     // im going to use a switch case instead
@@ -73,20 +73,24 @@ const movementHandler = (e) => {
     switch (e.keyCode) {
         // move up
         case (87):
+        case (38):
             // this moves player up 10px every press
             player.y -= 10
             // we need the break keyword so we can move to another case if necessary
             break
         // move left
         case (65):
+        case (37):
             player.x -= 10
             break
         // move down
         case (83):
+        case (40):
             player.y += 10
             break
         // move right
         case (68):
+        case (39):
             player.x += 10
             break
 
@@ -105,6 +109,12 @@ const movementHandler = (e) => {
 const gameLoop = () => {
     // no console logs in here if you can avoid it
     // for testing, it's ok to add them, but final should not have any
+
+    // to resemble movement, we should clear the old canvas every loop
+    // then instead of drawing a snake because it's maintaining all the old positions of our character
+    // we'll just see our player square moving around
+    ctx.clearRect(0, 0, game.width, game.height)
+
     player.render()
     movement.textContent = `${player.x}, ${player.y}`
 
