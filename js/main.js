@@ -7,6 +7,7 @@
 // the hero and the ogre should be able to collide to make something happen
 // when the hero collides with the ogre, ogre is removed from the screen, the game stops, and sends a message to the user that they have won
 
+// SETUP //
 // first we grab our HTML elements for easy reference later
 const game = document.getElementById('canvas')
 const movement = document.getElementById('movement')
@@ -30,32 +31,93 @@ game.setAttribute('width', getComputedStyle(game)['width'])
 game.setAttribute('height', getComputedStyle(game)['height'])
 game.height = 360
 
-const hero = {
-    x: 10,
-    y: 10,
-    color: 'hotpink',
-    width: 20,
-    height: 20,
-    alive: true,
-    render: function () {
-        // we can use builtin canvas methods for drawing basic shapes
-        ctx.fillStyle = this.color
-        ctx.fillRect(this.x, this.y, this.width, this.height)
+// CRAWLER CLASS //
+// since these two objects are basically the same, we can create a class to keep our code DRY
+class Crawler {
+    constructor(x, y, width, height, color) {
+        this.x = x
+        this.y = y
+        this.width = width
+        this.height = height
+        this.color = color
+        this.alive = true
+        this.render = function () {
+            ctx.fillStyle = this.color
+            ctx.fillRect(this.x, this.y, this.width, this.height)
+        }
     }
 }
 
-const ogre = {
-    x: 200,
-    y: 100,
-    color: '#bada55',
-    width: 60,
-    height: 120,
-    alive: true,
-    render: function () {
-        ctx.fillStyle = this.color
-        ctx.fillRect(this.x, this.y, this.width, this.height)
+const player = new Crawler(10, 10, 16, 16, 'lightsteelblue')
+const ogre = new Crawler(200, 50, 32, 48, '#bada55')
+
+// player.render()
+// ogre.render()
+
+/// MOVEMENT HANDLER ///
+// our movement handler function tells our code how and when to move the player around
+// this will be tied to an event listener for key events
+const movementHandler = (e) => {
+    // here the `e` represents `event` -> specifically will be a keydown
+    // we're going to use keyCodes to tell it do do different movements for different keys
+    // here are some basic key codes:
+    // w = 87, a = 65, s = 83, d = 68
+    // up = 38, left = 37, down = 40, right = 39
+    // by linking these keycodes to a function(or codeblock)
+    // we can tell them to change the player x or y values
+    console.log('what the heck is e?\n', e.keyCode)
+    // conditional statements if keycode === something do something if keycode === somethingElse do somethingElse
+    // could build a giant if...else for this
+    // im going to use a switch case instead
+    // switch is my condition, and it opens up for a multitude of cases
+    switch (e.keyCode) {
+        // move up
+        case (87):
+            // this moves player up 10px every press
+            player.y -= 10
+            // we need the break keyword so we can move to another case if necessary
+            break
+        // move left
+        case (65):
+            player.x -= 10
+            break
+        // move down
+        case (83):
+            player.y += 10
+            break
+        // move right
+        case (68):
+            player.x += 10
+            break
+
     }
 }
 
-hero.render()
-ogre.render()
+
+
+
+// GAME LOOP //
+// we're going to set up a gameLoop function
+// this will be attached to an interval
+// this function will run every interval(amount of milliseconds)
+// this is how we will animate our game
+
+const gameLoop = () => {
+    // no console logs in here if you can avoid it
+    // for testing, it's ok to add them, but final should not have any
+    player.render()
+    movement.textContent = `${player.x}, ${player.y}`
+
+    if (ogre.alive) {
+        ogre.render()
+    }
+}
+
+// here we'll add an event listener, when the DOMcontent loads, run the game on an interval
+// eventually this event will have more in it
+document.addEventListener('DOMContentLoaded', function () {
+    // this is where I'll link up the movementHandler event
+    document.addEventListener('keydown', movementHandler)
+    // here is our gameLoop interval
+    setInterval(gameLoop, 60)
+})
